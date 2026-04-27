@@ -1,0 +1,1049 @@
+{
+  "name": "MarketingIA",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        300,
+        500
+      ],
+      "id": "084f501e-87c7-46a8-8413-24590ef295e0",
+      "name": "GPT 4.1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ZJ9AEb8vQBEBXyXX",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "createImage",
+        "description": "Chame esta ferramenta para criar uma imagem.",
+        "workflowId": {
+          "__rl": true,
+          "value": "iqrFhUP1aDolVaSq",
+          "mode": "list",
+          "cachedResultName": "Create Image"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatID": "={{ $('Numero User').item.json.User }}",
+            "imagePrompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('imagePrompt', `A imagem solicitada pelo usuário`, 'string') }}",
+            "imageTitle": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('imageTitle', `O título da imagem. Não deve ter mais de 4 palavras.`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "imageTitle",
+              "displayName": "imageTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "imagePrompt",
+              "displayName": "imagePrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        1260,
+        500
+      ],
+      "id": "5fd47f09-90ad-455b-ba64-6cdc7f60cbe9",
+      "name": "Create Image"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Numero User').item.json.User }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        580,
+        500
+      ],
+      "id": "3041b955-99c1-4e5d-a805-1925b59d809c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "name": "editImage",
+        "description": "Chame esta ferramenta para editar uma imagem.",
+        "workflowId": {
+          "__rl": true,
+          "value": "yXdPfLZYMJm7Ux0S",
+          "mode": "list",
+          "cachedResultName": "Edit Image"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "image": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('image', `O título da imagem que o usuário deseja editar`, 'string') }}",
+            "chatID": "={{ $('Numero User').item.json.User }}",
+            "request": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('request', `A edição que o usuário deseja fazer na imagem`, 'string') }}",
+            "pictureID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pictureID', `O ID da imagem a ser editada`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "request",
+              "displayName": "request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "pictureID",
+              "displayName": "pictureID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        500
+      ],
+      "id": "6fd59754-2b84-4850-bcf1-e08d73c5de06",
+      "name": "Edit Image"
+    },
+    {
+      "parameters": {
+        "name": "searchImages",
+        "description": "Chame esta ferramenta para pesquisar no banco de dados de imagens.",
+        "workflowId": {
+          "__rl": true,
+          "value": "eeFaCv2fS8iZ4fIv",
+          "mode": "list",
+          "cachedResultName": "Search Image"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "intent": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('intent', `A intenção do usuário. Pode ser \"Obter\" ou \"Editar\".`, 'string') }}",
+            "image": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('image', `O título da imagem`, 'string') }}",
+            "chatID": "={{ $('Numero User').item.json.User }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        1660,
+        500
+      ],
+      "id": "eb335e53-a2ec-4fbb-a7e5-441d00dcf0ff",
+      "name": "Search Images"
+    },
+    {
+      "parameters": {
+        "name": "blogPost",
+        "description": "Use esta ferramenta para criar uma postagem de blog usando um tópico e um público-alvo.",
+        "workflowId": {
+          "__rl": true,
+          "value": "cE2qQ49uNTnYyWdw",
+          "mode": "list",
+          "cachedResultName": "Blog Post"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "blogTopic": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('blogTopic', `O tópico do blog.`, 'string') }}",
+            "targetAudience": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('targetAudience', `O público-alvo do blog.`, 'string') }}",
+            "chatID": "={{ $('Numero User').item.json.User }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "blogTopic",
+              "displayName": "blogTopic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "targetAudience",
+              "displayName": "targetAudience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        1080,
+        500
+      ],
+      "id": "992739bc-fbad-4334-a4c3-bd1b08932f6e",
+      "name": "Blog Post"
+    },
+    {
+      "parameters": {
+        "content": "# Time de Marketing",
+        "height": 400,
+        "width": 460
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        0
+      ],
+      "id": "8d2477fc-f1a6-4029-8960-bd9d58b66c11",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "name": "linkedinPost",
+        "description": "Use esta ferramenta para criar uma publicação no LinkedIn usando um tópico e um público-alvo.",
+        "workflowId": {
+          "__rl": true,
+          "value": "5zXxe6OPKaub5tB6",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Post"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "postTopic": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('postTopic', `O tópico da postagem do LinkedIn`, 'string') }}",
+            "targetAudience": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('targetAudience', `O público-alvo da postagem do LinkedIn`, 'string') }}",
+            "chatID": "={{ $('Numero User').item.json.User }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "postTopic",
+              "displayName": "postTopic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "targetAudience",
+              "displayName": "targetAudience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        920,
+        500
+      ],
+      "id": "9a8f4c6e-909d-4c87-971e-f53b6e5a389d",
+      "name": "LinkedIn Post"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe7ecc99-e1e8-4a5e-bdd6-6fce9757b234",
+              "name": "text",
+              "value": "={{ $('Whatsapp Trigger').item.json.body.data.message.conversation }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1daa74e6-8801-42c8-a43a-11246444fa06",
+      "name": "Set 'Text'",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "5374bbcd-6b6d-40fb-9dfa-8e76680c3b64",
+      "name": "Transcribe Audio",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        800,
+        80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "RdgPIXCH0s7I8uh4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Whatsapp Trigger').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "305f5f33-714a-4c36-80a1-518f7e14ec88"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c844924-b2ed-48b0-935c-c66a8fd0c778",
+                    "leftValue": "={{ $('Whatsapp Trigger').item.json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f149fd61-927a-4622-84cd-da9f73404d7a",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        140,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Trigger\n",
+        "height": 400,
+        "width": 1120,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ],
+      "id": "86ea1f70-3a42-46a7-8478-7ebbbbc89f37",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Criacao de Conteudo",
+        "height": 220,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        720,
+        420
+      ],
+      "id": "0ebed827-b76e-4945-81b3-a6ab5157e2f7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Criacao Imagem",
+        "height": 220,
+        "width": 320,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        420
+      ],
+      "id": "034fc67d-4caa-4c7f-ad5c-24ffb2fb26b9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# Database imagem",
+        "height": 220,
+        "width": 300,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        420
+      ],
+      "id": "53f66af3-12b7-4fa9-b4aa-d54fab62d43f",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# Resposta\n\n",
+        "height": 400,
+        "width": 300,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        0
+      ],
+      "id": "ea61d816-0b3f-4142-97f0-8183ec7271da",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# Cerebro\n\n",
+        "height": 220,
+        "width": 440,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        260,
+        420
+      ],
+      "id": "7c0298a5-6f45-46db-bacb-010b58a76076",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# Voz ou texto",
+        "height": 400,
+        "width": 420,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        0
+      ],
+      "id": "9596a719-7c05-43f5-997d-23329945816f",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "name": "video",
+        "description": "Chame esta ferramenta para criar um vídeo.",
+        "workflowId": {
+          "__rl": true,
+          "value": "4pWPDBhwyBUyoLY4",
+          "mode": "list",
+          "cachedResultName": "Faceless Video"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "videoTopic": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('videoTopic', `O tema do vídeo`, 'string') }}",
+            "chatID": "={{ $('Numero User').item.json.User }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "videoTopic",
+              "displayName": "videoTopic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.1,
+      "position": [
+        780,
+        500
+      ],
+      "id": "1927467b-f248-44a7-845e-c2d90853f39b",
+      "name": "Video",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "=# Visão Geral\nVocê é um agente de IA da equipe de marketing. Seu trabalho é ajudar o usuário a criar e editar imagens com base no pedido, ou criar conteúdo.\n\n## Ferramentas\ncreateImage - Use isso para criar uma imagem. Envie o prompt de imagem solicitado para essa ferramenta.\neditImage - Use isso para editar uma imagem. O usuário também pode dizer \"faça\" em vez de \"edite\".\nsearchImage - Use isso para buscar no banco de dados de imagens.\nblogPost - Use isso para criar uma postagem de blog.\nlinkedinPost - Use isso para criar uma postagem no LinkedIn.\nThink - Use isso se precisar de ajuda para tomar uma decisão.\n\n## Instruções\n- Se o usuário pedir para \"editar aquela imagem\" ou \"fazer aquilo...\", isso indica que ele quer editar a última imagem no banco de dados, a mais recente.\n\n- Se o usuário solicitar uma postagem de blog ou no LinkedIn, use a ferramenta \"blogPost\" ou \"linkedinPost\" e retorne: \"Aqui está a postagem que você pediu. Espero que goste.\"\n\n## Saída\n- Certifique-se de retornar o link da imagem como um link clicável"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1180,
+        160
+      ],
+      "id": "31154df2-5f9f-4530-8581-bc8cef16d504",
+      "name": "Marketing Team Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        440,
+        500
+      ],
+      "id": "92ed05a7-808d-4f4b-8423-7ea8abab3db3",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "content": "✅ Primeiros Passos\nImporte os seguintes workflows para o seu ambiente do n8n:\n\nVídeo\n\nPost no LinkedIn\n\nPost no Blog\n\nCriar Imagem\n\nEditar Imagem\n\nBuscar Imagens\n\nConecte todos os workflows corretamente.\n\nCertifique-se de que as ferramentas usadas pelo Agente de Marketing estejam devidamente conectadas a esses workflows.\n\nRenomeie os workflows conforme necessário para se adequar ao seu sistema de nomenclatura.\n\n🔗 Credenciais para Conectar\nCredencial do Telegram (para comunicação de entrada/saída)\n\nCredencial do OpenRouter (para requisições de IA)\n\nCredencial do Tavily (para pesquisas nos workflows de Post no LinkedIn e Post no Blog)\n\n🔑 Chaves de API para Configurar\nDentro do Workflow de Vídeo:\n\nChave da PiAPI (para geração de vídeos)\n\nChave da Runway (para processamento de vídeo)\n\nChave da ElevenLabs (para geração de voz)\n\nDentro dos Workflows de Post no LinkedIn e Post no Blog:\n\nChave da Tavily (para auxílio em pesquisas)\n\n📄 Templates para Baixar e Conectar\nTemplate de Imagem do Creatomate\n→ Baixe na Comunidade Free Skool\n\nTemplate de Log do Google Sheets\n→ Conecte-o ao seu nó do Google Sheets no n8n para rastrear os conteúdos gerados.\n\n\n\n",
+        "height": 1000,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        480
+      ],
+      "id": "7c0c5dbd-f890-40f3-949b-3a531f5748db",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e9469692-ce52-4597-abd8-bedf2d515dca",
+              "leftValue": "={{ $('Whatsapp Trigger').item.json.body.data.key.fromMe }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        160
+      ],
+      "id": "e2437371-063a-47e7-b879-b4e7c4b9ec40",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ip/chat/getBase64FromMediaMessage/MarketingIA",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "f9a76e0fcb32416ab7c0289639dc0a7d6fe5f0a0e2c173c6492b1c4086ae4ff7"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {\n    \"key\": {\n      \"id\": \"{{ $('Whatsapp Trigger').item.json.body.data.key.id }}\"\n    }\n  },\n  \"convertToMp4\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        340,
+        80
+      ],
+      "id": "8f4fa582-9df7-4f94-84e8-09ce99ff4d54",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        80
+      ],
+      "id": "1c64f418-74f5-41d0-a2be-9abb1019fb97",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "187bdd9e-23cd-4b1b-aa42-c67a785bf3b7",
+              "name": "User",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -260,
+        160
+      ],
+      "id": "fbaaa89c-e02a-42e5-9c62-29ae20a49274",
+      "name": "Numero User"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7659c884-4f39-4bca-837e-e1a16ab15d2e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        160
+      ],
+      "id": "1a9bf708-fad0-4d50-bb7f-35d93149e197",
+      "name": "Whatsapp Trigger",
+      "webhookId": "7659c884-4f39-4bca-837e-e1a16ab15d2e"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "MarketingIA",
+        "remoteJid": "={{ $('Numero User').item.json.User }}",
+        "messageText": "={{ $json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        160
+      ],
+      "id": "5c8d6434-f782-4250-a1fe-04865008fab3",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "F2M2DxlrlBamXPvr",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "GPT 4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Image": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Images": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blog Post": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Post": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set 'Text'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Audio": {
+      "main": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set 'Text'": {
+      "main": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Video": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketing Team Agent": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Marketing Team Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Numero User": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whatsapp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Numero User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5e73265f-f675-4560-b853-dbe55a2834b3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0898c7399aa93049ad6010af6ed31a0e76d8881cf91643b1268085f9df1972b4"
+  },
+  "id": "V1t7BEQQtHt1exOH",
+  "tags": []
+}

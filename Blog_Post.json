@@ -1,0 +1,596 @@
+{
+  "name": "Blog Post",
+  "nodes": [
+    {
+      "parameters": {
+        "toolDescription": "Use this tool to search the web. ",
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"{searchTerm}\",\n  \"topic\": \"general\",\n  \"search_depth\": \"advanced\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": false,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": []\n}",
+        "placeholderDefinitions": {
+          "values": [
+            {
+              "name": "searchTerm",
+              "description": "What the user is searching for. "
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [
+        -1280,
+        500
+      ],
+      "id": "e1ae641b-57c9-4f7c-8966-40daf8bb6d34",
+      "name": "Tavily",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OKE7QVyc05vxcttL",
+          "name": "Tavily Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        500
+      ],
+      "id": "48e1b9a0-cd31-4f40-9c84-72a67cd10b87",
+      "name": "GPT_4.1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ZJ9AEb8vQBEBXyXX",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Postagem do blog:\n{{ $json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Visão Geral\nVocê é um agente de IA que transforma posts de blog em descrições visuais para gerar materiais gráficos de marketing. Esses elementos visuais são projetados para serem combinados com o post, ajudando a comunicar a mensagem de uma forma visualmente envolvente e alinhada à marca.\n\n## Objetivo:\n- Ler e analisar o post do blog.\n- Identificar a mensagem principal, o insight ou a conclusão do post.\n- Criar um prompt gráfico claro e atraente que possa ser usado com um gerador de texto para imagem.\n- O resultado deve ser um gráfico no estilo marketing — não uma cena literal ou uma foto hiper-realista — que:\n1) Apoie ou ilustre visualmente a ideia principal do post;\n2) Tenha uma aparência adequada para uso em um feed profissional do LinkedIn;\n3) Seja elegante, moderno e envolvente.\n\n## Instruções de Saída:\n- Imprima dois campos:\n1) título (2 a 4 palavras);\n2) prompt\n- Imprima apenas o prompt da imagem final. Não imprima entre aspas.\n- Não repita ou reformule o post do blog.\n\n- Não adicione explicações ou conteúdo extra — apenas o prompt de imagem.\n- Nunca deixe itens em branco, como \"Área do cabeçalho reservada para texto de chamada personalizável\"\n- Exiba estatísticas numéricas quando disponíveis na publicação original\n\n## Diretrizes de Estilo:\n- Pense como um designer de marca ou um criativo de marketing.\n- Os recursos visuais podem incluir: texto, gráficos, ícones, formas abstratas, sobreposições, ilustrações modernas, efeitos de movimento, elementos tipográficos em negrito (descritos, não renderizados) ou conceitos metafóricos.\n- Você pode mencionar sugestões de layout (por exemplo, \"design de tela dividida\", \"cabeçalho com título em negrito e ilustração de fundo sutil\").\n- Presuma que a saída será gerada usando ferramentas de imagem de IA — seu prompt deve guiar essas ferramentas de forma eficaz.\n\n## Formato de Prompt de Exemplo:\nUm gráfico moderno em estilo plano mostrando um cérebro humano conectado a engrenagens mecânicas, representando a fusão de IA e automação. Fundo minimalista, gradientes suaves, espaço limpo para texto sem serifa na parte superior."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -860,
+        220
+      ],
+      "id": "e9308f2a-7895-4eb3-a194-319bd59d72f2",
+      "name": "Image Prompt Agent"
+    },
+    {
+      "parameters": {
+        "content": "# Content Generation",
+        "height": 260,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        120
+      ],
+      "id": "907c94d5-fa36-4cb7-920a-e0d905669928",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Generate Image\n",
+        "height": 260,
+        "width": 460,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        120
+      ],
+      "id": "e1fe1e5e-3a2c-46c6-98a4-9b8e8a77e485",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Image Prompt\n",
+        "height": 260,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        120
+      ],
+      "id": "7bd7d5ff-9c05-40eb-81b1-641b5c19f170",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Tool & Model",
+        "height": 240,
+        "width": 380,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        400
+      ],
+      "id": "fc94b9af-2f80-4460-9096-6245fcff4864",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "blogTopic"
+            },
+            {
+              "name": "targetAudience"
+            },
+            {
+              "name": "chatID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1560,
+        220
+      ],
+      "id": "7fd7659f-920f-4378-829d-81566857718a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tópico do blog: {{ $json.blogTopic }}\n\nPúblico-alvo: {{ $json.targetAudience }}",
+        "options": {
+          "systemMessage": "=# Visão Geral\nVocê é um agente de IA especializado em criar artigos de blog profissionais, educativos e envolventes com base em qualquer tópico fornecido pelo usuário.\n\n## Objetivos:\nSempre comece realizando uma busca em tempo real usando a ferramenta Tavily para reunir as informações mais precisas e atualizadas sobre o tópico. O artigo do blog deve ser escrito para atrair o público-alvo fornecido.\n\nCom base em sua pesquisa, crie um post de blog bem estruturado que:\n- Comece com uma introdução envolvente e informativa que destaque a importância do tópico\n- Mantenha um tom profissional, claro e de fácil leitura\n- Seja educativo, perspicaz e aprofundado\n- Utilize cabeçalhos, subtítulos e parágrafos para criar uma boa legibilidade\n- Incorpore dados reais, exemplos ou estudos de caso, atribuindo as fontes corretamente (por exemplo, \"de acordo com [fonte]\")\n- Use poucos emojis (use apenas se forem altamente relevantes e mínimos)\n- Inclua uma conclusão natural que resuma os principais pontos\n- (Opcional, mas recomendado) Sugira os próximos passos para o leitor, como artigos relacionados, recursos ou conselhos práticos\n\n## Instruções de Saída:\n- Seu ÚNICO resultado deve ser o texto final do artigo do blog.\n- Não inclua explicações, notas ou qualquer coisa além do conteúdo do blog em si.\n\n## Exemplo de fluxo de trabalho:\n1) Receba um tópico (por exemplo, “O ROI da automação de armazéns”)\n2) Use o Tavily para pesquisar e reunir informações, estudos ou exemplos recentes\n3) Elabore um rascunho de um post de blog usando essa pesquisa\n4) Formate-o com uma introdução envolvente, seções estruturadas, citações de fontes e uma conclusão natural"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -1300,
+        220
+      ],
+      "id": "6c2b45a5-a62a-4161-a6ce-478ae419533a",
+      "name": "Blog Post Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ",
+          "mode": "list",
+          "cachedResultName": "Marketing Team Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $('Image Prompt Agent').item.json.output.title }}",
+            "Type": "Post",
+            "Request": "={{ $('When Executed by Another Workflow').item.json.blogTopic }} for {{ $('When Executed by Another Workflow').item.json.targetAudience }}",
+            "ID": "={{ $json.id }}",
+            "Link": "={{ $json.webViewLink }}",
+            "Post": "={{ $('Blog Post Agent').item.json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        340,
+        380
+      ],
+      "id": "e1d907da-0d17-48d0-a9b6-a3f52c7ed4f8",
+      "name": "Image Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N6WHDVlgmsazQMFB",
+          "name": "Google Sheets Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"<2-4 word creative title for the image>\",\n  \"prompt\": \"<full detailed image generation prompt>\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        500
+      ],
+      "id": "5f3699c5-d705-4cfd-9a04-75b6c0115c6a",
+      "name": "Image & Title"
+    },
+    {
+      "parameters": {
+        "content": "## Structured Output",
+        "height": 240,
+        "width": 320,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        400
+      ],
+      "id": "94942a8a-a7f1-41d4-ade7-4d95cad3f6ce",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# Trigger\n",
+        "height": 260,
+        "width": 260,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1640,
+        120
+      ],
+      "id": "5dd02cf2-5711-45c1-b6d6-7c806e84e3f5",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Write to Drive & Sheets",
+        "height": 240,
+        "width": 540,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "id": "f197ed18-5b06-425e-9d79-b2eba7a11098",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# Send Content",
+        "height": 240,
+        "width": 540,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dd679245-adae-48aa-a4e6-bc804f56fe2b",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Image Prompt Agent').item.json.output.title }}.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1TgQu-5hlOzO1X28TMMzLxfhunhPSUIqy",
+          "mode": "list",
+          "cachedResultName": "AI Image Generation",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1TgQu-5hlOzO1X28TMMzLxfhunhPSUIqy"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        120,
+        380
+      ],
+      "id": "ad31fdab-5c80-4ca2-9d45-fd532e655ead",
+      "name": "Upload",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ZUIlGLrMwDKeQ7yH",
+          "name": "Google Drive Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "model": "gpt-image-1",
+        "prompt": "={{ $json.output.prompt.replace(/\"/g, '') }}",
+        "options": {
+          "size": "1024x1024"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -320,
+        220
+      ],
+      "id": "b3fbc280-e3b9-45b6-ad87-1c46c1d55f0c",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "RdgPIXCH0s7I8uh4",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-image",
+        "instanceName": "MarketingIA",
+        "remoteJid": "={{ $('When Executed by Another Workflow').item.json.chatID }}",
+        "media": "data",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        120,
+        80
+      ],
+      "id": "25292c50-ef65-4b77-a2ac-be37dbb32faa",
+      "name": "Send Photo",
+      "credentials": {
+        "evolutionApi": {
+          "id": "F2M2DxlrlBamXPvr",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "MarketingIA",
+        "remoteJid": "={{ $('When Executed by Another Workflow').item.json.chatID }}",
+        "messageText": "={{ $('Blog Post Agent').item.json.output }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        340,
+        80
+      ],
+      "id": "982ef221-08aa-475a-b21e-f80328be105a",
+      "name": "Send Blog",
+      "credentials": {
+        "evolutionApi": {
+          "id": "F2M2DxlrlBamXPvr",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Blog Post Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT_4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Blog Post Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Image Prompt Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt Agent": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Blog Post Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blog Post Agent": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image & Title": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Image Prompt Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload": {
+      "main": [
+        [
+          {
+            "node": "Image Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Upload",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Photo": {
+      "main": [
+        [
+          {
+            "node": "Send Blog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cba84345-d5d1-46be-88c5-d80894599837",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0898c7399aa93049ad6010af6ed31a0e76d8881cf91643b1268085f9df1972b4"
+  },
+  "id": "cE2qQ49uNTnYyWdw",
+  "tags": []
+}

@@ -1,0 +1,435 @@
+{
+  "name": "Create Image",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "imageTitle"
+            },
+            {
+              "name": "imagePrompt"
+            },
+            {
+              "name": "chatID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1020,
+        220
+      ],
+      "id": "ae90d6a1-bb34-4945-90d5-38cbbdd59946",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.imagePrompt }}",
+        "options": {
+          "systemMessage": "=# Visão Geral\nVocê é um engenheiro especialista em prompts de imagem. Sua função é pegar um tópico ou conceito de imagem simples e expandi-lo para um prompt de imagem totalmente detalhado que possa ser inserido em um modelo de geração de texto para imagem.\n\n## Instruções do Prompt\nSeu prompt detalhado deve descrever claramente o seguinte:\n1) Assunto Principal: Qual é o foco principal da imagem?\n2) Fundo/Cenário: O que está acontecendo no fundo ou ambiente?\n3) Estilo: Especifique o estilo visual (ex.: hiper-realista, pintura digital, aquarela, anime, renderização 3D, etc.).\n4) Clima/Iluminação: Descreva o tom emocional e a iluminação (ex.: pôr do sol suave e quente, nuvens de tempestade sombrias, luzes neon futuristas).\n5) Detalhes Adicionais: Mencione quaisquer objetos, roupas, cores, texturas ou características notáveis ​​específicas que devem aparecer.\n\n## Formato de Saída\n- Comece com um prompt descritivo limpo e natural que integre todos os elementos acima perfeitamente.\n- A descrição deve soar como se tivesse sido escrita especificamente para uma IA gerar uma imagem profissional e de alta qualidade.\n- Evite repetir o tópico original literalmente — em vez disso, reformule-o em uma cena ou conceito visual vívido.\n- Use linguagem e imagens ricas e vívidas.\n\n## Exemplo\n- Entrada: \"Uma cidade futurista\"\n- Saída: \"Uma cidade futurista em expansão à noite, brilhando com luzes neon em tons de azul e roxo. Arranha-céus imponentes com fachadas de vidro elegantes se alinham no horizonte. Carros voadores voam entre os prédios sob um céu nublado e elétrico. As ruas abaixo estão repletas de anúncios holográficos e pessoas vestindo roupas de alta tecnologia. Estilo de pintura digital, perspectiva cinematográfica altamente detalhada, atmosfera melancólica com reflexos suaves de neon no asfalto molhado.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -760,
+        220
+      ],
+      "id": "417cacf6-bb11-4250-8d23-78c406a30256",
+      "name": "Image Prompt"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        460
+      ],
+      "id": "473a2aa0-38ea-40ea-9be1-4b65b9b189bf",
+      "name": "GPT 4.1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ZJ9AEb8vQBEBXyXX",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('When Executed by Another Workflow').item.json.imageTitle }}.png",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1gCFonCFWg7ZxG3O4FC7PzcyslNqD8DQs",
+          "mode": "list",
+          "cachedResultName": "AI Image Generation",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1gCFonCFWg7ZxG3O4FC7PzcyslNqD8DQs"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        100,
+        360
+      ],
+      "id": "51511fff-7b31-4d7b-a6f8-5314da651030",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ZUIlGLrMwDKeQ7yH",
+          "name": "Google Drive Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ",
+          "mode": "list",
+          "cachedResultName": "Marketing Team Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 735492995,
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit#gid=735492995"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Request": "={{ $('When Executed by Another Workflow').item.json.imagePrompt }}",
+            "ID": "={{ $json.id }}",
+            "Link": "={{ $json.webViewLink }}",
+            "Title": "={{ $('When Executed by Another Workflow').item.json.imageTitle }}",
+            "Type": "Image"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        320,
+        360
+      ],
+      "id": "627e607e-44bc-42e1-8ace-0d0165a09c84",
+      "name": "Image Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N6WHDVlgmsazQMFB",
+          "name": "Google Sheets Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Image Prompt\n",
+        "height": 240,
+        "width": 360,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        140
+      ],
+      "id": "20f79d48-fb55-49e0-b84f-8a22a34f8f72",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Model",
+        "height": 180,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        400
+      ],
+      "id": "d7968a96-5535-4d3a-b599-2bc711a13a7c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Trigger\n",
+        "height": 240,
+        "width": 260,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        140
+      ],
+      "id": "0539ab6c-3fa7-4f03-a47a-e464c742bbbd",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Generate Image\n",
+        "height": 240,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        140
+      ],
+      "id": "68e7f567-260b-40c2-ab22-73ff8bdb13f9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Send Content",
+        "height": 240,
+        "width": 300,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c108b044-5e62-42a1-accf-9ab1da0f64e8",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# Write to Drive & Sheets",
+        "height": 240,
+        "width": 540,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        280
+      ],
+      "id": "bd906509-682b-46e3-bb52-2ebabf289225",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-image",
+        "instanceName": "MarketingIA",
+        "remoteJid": "={{ $('When Executed by Another Workflow').item.json.chatID }}",
+        "media": "data",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        100,
+        80
+      ],
+      "id": "3f1977b7-b906-4c0a-964f-72bafaecf978",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "F2M2DxlrlBamXPvr",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "model": "gpt-image-1",
+        "prompt": "={{ $json.output.replace(/\"/g, '') }}",
+        "options": {
+          "size": "1024x1024"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -300,
+        220
+      ],
+      "id": "e9cf8016-7f23-41d7-88a7-39c803affebf",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "RdgPIXCH0s7I8uh4",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "imageTitle": "Camisa Vôlei Kazen",
+          "imagePrompt": "Camisa de vôlei moderna chamada 'Kazen', inspirada no conceito de vento (kaze) e tranquilidade (zen). A camisa deve ter linhas suaves em movimento e um design harmonioso. Paleta: tons de azul (celeste e azul profundo) para transmitir tranquilidade e leveza, detalhes em branco para sensação de ar e leveza, e toques de prata para destacar elegância e dinamismo. O nome 'Kazen' aparece no peito com fonte elegante e levemente inclinada para sugerir movimento, e pequenos detalhes ondulados ao redor das mangas.",
+          "chatID": "559891192490@s.whatsapp.net"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT 4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Image Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Image Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bf276a33-e15e-4d74-a028-4b50d47a7a52",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0898c7399aa93049ad6010af6ed31a0e76d8881cf91643b1268085f9df1972b4"
+  },
+  "id": "iqrFhUP1aDolVaSq",
+  "tags": []
+}

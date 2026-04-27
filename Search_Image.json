@@ -1,0 +1,558 @@
+{
+  "name": "Search Image",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        560
+      ],
+      "id": "a91e7483-29d2-4cae-853c-17751899e2bb",
+      "name": "GPT 4.1 mini",
+      "credentials": {
+        "openRouterApi": {
+          "id": "ZJ9AEb8vQBEBXyXX",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ",
+          "mode": "list",
+          "cachedResultName": "Marketing Team Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 735492995,
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1aGVv6rHJaiRpmRwkXJILTRX-ydgURR6-54En9Z8H9EQ/edit#gid=735492995"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        -600,
+        560
+      ],
+      "id": "0a90c799-570c-4a6d-a8be-bcdc6a023c35",
+      "name": "Image Database",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N6WHDVlgmsazQMFB",
+          "name": "Google Sheets Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "intent"
+            },
+            {
+              "name": "image"
+            },
+            {
+              "name": "chatID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -880,
+        300
+      ],
+      "id": "b2913ed8-3058-4ce4-8bbb-493f7a5de620",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Image: {{ $json.image }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Visão Geral\nVocê é um Agente de Recuperação de Imagens. Quando o usuário fornece uma consulta, sua tarefa é pesquisar no \"Banco de Dados de Imagens\" usando as palavras-chave da consulta. Localize a imagem correspondente mais relevante.\n\n## Saída\n- Retorna o nome, o ID e o link da imagem\n- Se nenhuma imagem for encontrada, exibe \"Não Encontrado\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -600,
+        300
+      ],
+      "id": "a6e7ee48-0e9f-467d-8935-370800349233",
+      "name": "Image Search Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "44c36e1d-19e8-4411-bd3d-86c5144ecb14",
+              "name": "response",
+              "value": "Image wasn't found in the database",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        40,
+        40
+      ],
+      "id": "0038dfda-7649-4988-8ccb-f5db8dd81f5e",
+      "name": "Not Found"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a5a9fd85-2403-423e-92a2-d3ba20db83d9",
+              "leftValue": "={{ $('When Executed by Another Workflow').first().json.intent }}",
+              "rightValue": "Get",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        300
+      ],
+      "id": "68e0b968-d822-4ab5-8499-ea143930e9c9",
+      "name": "Get?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "85e307aa-0bb8-40f1-b62e-5b36c231b0af",
+              "leftValue": "={{ $json.output.status }}",
+              "rightValue": "Not Found",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        300
+      ],
+      "id": "7dc15cc4-78a4-4591-b25e-7d693a4cc5d1",
+      "name": "Not Found?"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.output.image_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        320,
+        300
+      ],
+      "id": "4bb7ece6-817d-4119-93e3-72964c06ce34",
+      "name": "Download File",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ZUIlGLrMwDKeQ7yH",
+          "name": "Google Drive Estevao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Trigger\n",
+        "height": 260,
+        "width": 260,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        220
+      ],
+      "id": "f72d4819-01a7-4c36-9baf-7931f50739fc",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Tool & Model",
+        "height": 200,
+        "width": 280,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        500
+      ],
+      "id": "32374e31-dc5f-49b8-b944-a083325d94f5",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Image Search\n",
+        "height": 260,
+        "width": 380,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        220
+      ],
+      "id": "e7ff6743-ce02-4d72-a6f1-e45341b58954",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Structured Output",
+        "height": 200,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        500
+      ],
+      "id": "40bb764c-e1e9-49c1-aafd-eb41119a0e38",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"image_name\":\"string | null\",\n  \"image_id\": \"string | null\",\n  \"image_link\": \"string | null\",\n  \"status\": \"found | not_found\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -380,
+        560
+      ],
+      "id": "b592b883-c6be-479e-93a5-220c965214a3",
+      "name": "Name, ID, & Link"
+    },
+    {
+      "parameters": {
+        "content": "# Not Found?",
+        "height": 260,
+        "width": 260,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        220
+      ],
+      "id": "43cd71c3-6f3f-4398-bf22-f60b4de2b4e8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 200,
+        "width": 180,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "13a162e4-3e1f-44e3-af3c-37c7008a71ed",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Get?",
+        "height": 260,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        220
+      ],
+      "id": "3cafbd75-46e9-4545-9b6f-cdf5b547fddf",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "be32fa20-d1e6-4831-a266-5991e5c4eb1e",
+              "name": "imageName",
+              "value": "={{ $json.output.image_name }}",
+              "type": "string"
+            },
+            {
+              "id": "10b5ddb9-a482-46a7-962f-8e18533d90d5",
+              "name": "imageID",
+              "value": "={{ $json.output.image_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        540
+      ],
+      "id": "62d05699-c159-4ba3-936b-5dba863f34a2",
+      "name": "Edit"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 200,
+        "width": 180,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        260,
+        500
+      ],
+      "id": "58b2199e-6047-4465-9ef5-6437735db5c1",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# Send Content",
+        "height": 260,
+        "width": 280,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        500,
+        220
+      ],
+      "id": "e7285dc4-5059-49f4-885e-811c7b4f94ba",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "# Download\n",
+        "height": 260,
+        "width": 220,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        260,
+        220
+      ],
+      "id": "91a19b1f-e03b-492e-b66b-e30ea6e78bdd",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-image",
+        "instanceName": "MarketingIA",
+        "remoteJid": "={{ $('When Executed by Another Workflow').item.json.chatID }}",
+        "media": "data",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        600,
+        300
+      ],
+      "id": "54faaac7-3ab7-4eef-b45a-814736010f7d",
+      "name": "Evolution API",
+      "credentials": {
+        "evolutionApi": {
+          "id": "F2M2DxlrlBamXPvr",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "GPT 4.1 mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Image Search Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "Image Search Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Image Search Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Search Agent": {
+      "main": [
+        [
+          {
+            "node": "Not Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Not Found?": {
+      "main": [
+        [
+          {
+            "node": "Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get?": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Evolution API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Name, ID, & Link": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Image Search Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "31473f99-0512-448a-9e40-1b830296fcf9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0898c7399aa93049ad6010af6ed31a0e76d8881cf91643b1268085f9df1972b4"
+  },
+  "id": "eeFaCv2fS8iZ4fIv",
+  "tags": []
+}
